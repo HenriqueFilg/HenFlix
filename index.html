@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HenFlix – Assista o que quiser</title>
+<link rel="stylesheet" href="">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-logo">HENFLIX</div>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div style="display:flex;align-items:center;gap:1.5rem">
+    <div class="nav-logo" onclick="scrollTo(0,0)">HENFLIX</div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#" class="active" onclick="setActive(this)">Início</a></li>
+      <li><a href="" onclick="setActive(this)">Séries</a></li>
+      <li><a href="" onclick="setActive(this)">Filmes</a></li>
+      <li><a href="" onclick="setActive(this)">Novo &amp; Popular</a></li>
+      <li><a href="" onclick="setActive(this)">Minha Lista</a></li>
+    </ul>
+  </div>
+  <div class="nav-right">
+    <div class="nav-icon" onclick="openSearch()" title="Pesquisar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+    <div class="notif-wrap" id="notifWrap">
+      <div class="notif-btn" onclick="toggleNotif()" title="Notificações">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div class="notif-badge" id="notifBadge">4</div>
+      </div>
+
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-header">
+          <div class="notif-header-title">Notificações</div>
+          <button class="notif-mark-all" onclick="markAllRead()">Marcar todas como lidas</button>
+        </div>
+
+        <div class="notif-list" id="notifList"></div>
+
+        <div class="notif-footer">
+          <button onclick="showToast('Carregando todas as notificações...')">Ver todas as notificações</button>
+        </div>
+      </div>
+    </div>
+    <div class="profile-wrap" id="profileWrap">
+      <!-- Avatar trigger -->
+      <div style="display:flex;align-items:center;gap:.3rem;cursor:pointer" onclick="toggleProfile()">
+        <div class="nav-avatar" id="navAvatar">
+          <img id="navAvatarImg" src="" alt="">
+          <span id="navAvatarInitials">JD</span>
+        </div>
+        <div class="nav-avatar-caret"></div>
+      </div>
+
+      <!-- Dropdown -->
+      <div class="profile-dropdown" id="profileDropdown">
+
+        <!-- Avatar + name -->
+        <div class="pd-avatar-section">
+          <div class="pd-avatar-wrap" title="Trocar foto de perfil">
+            <div class="pd-avatar" id="pdAvatar">
+              <img id="pdAvatarImg" src="" alt="">
+              <span id="pdAvatarInitials">JD</span>
+            </div>
+            <div class="pd-avatar-edit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </div>
+            <input type="file" accept="image/*" onchange="changeProfilePhoto(this)" title="Trocar foto">
+          </div>
+          <div class="pd-username">João da Silva</div>
+          <div class="pd-email">joao@email.com</div>
+        </div>
+
+        <!-- Menu items -->
+        <div class="pd-menu">
+          <button class="pd-item" onclick="closeProfile();showToast('👤 Meu Perfil')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            Meu Perfil
+          </button>
+          <button class="pd-item" onclick="closeProfile();showToast('⚙️ Configurações')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            Configurações
+          </button>
+
+          <div class="pd-divider"></div>
+
+          <button class="pd-item danger" onclick="closeProfile();showToast('👋 Até logo!')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Sair
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-backdrop" id="heroBG">
+    <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.25" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <radialGradient id="rg1" cx="70%" cy="40%"><stop offset="0%" stop-color="#cc1010"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+        <radialGradient id="rg2" cx="20%" cy="80%"><stop offset="0%" stop-color="#1a237e"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+      </defs>
+      <rect fill="url(#rg1)" x="0" y="0" width="1200" height="700"/>
+      <rect fill="url(#rg2)" x="0" y="0" width="1200" height="700"/>
+      <!-- city silhouette -->
+      <g fill="#000" opacity=".5">
+        <rect x="0" y="550" width="60" height="150"/>
+        <rect x="70" y="500" width="40" height="200"/>
+        <rect x="120" y="520" width="50" height="180"/>
+        <rect x="180" y="480" width="35" height="220"/>
+        <rect x="220" y="510" width="55" height="190"/>
+        <rect x="285" y="460" width="45" height="240"/>
+        <rect x="340" y="490" width="60" height="210"/>
+        <rect x="410" y="440" width="40" height="260"/>
+        <rect x="460" y="470" width="70" height="230"/>
+        <rect x="540" y="430" width="50" height="270"/>
+        <rect x="600" y="460" width="45" height="240"/>
+        <rect x="655" y="490" width="55" height="210"/>
+        <rect x="720" y="510" width="40" height="190"/>
+        <rect x="770" y="480" width="60" height="220"/>
+        <rect x="840" y="500" width="45" height="200"/>
+        <rect x="895" y="520" width="50" height="180"/>
+        <rect x="955" y="550" width="35" height="150"/>
+        <rect x="1000" y="490" width="60" height="210"/>
+        <rect x="1070" y="470" width="40" height="230"/>
+        <rect x="1120" y="510" width="80" height="190"/>
+      </g>
+      <!-- stars -->
+      <g fill="#fff">
+        <circle cx="100" cy="80" r="1.5" opacity=".8"/>
+        <circle cx="250" cy="50" r="1" opacity=".6"/>
+        <circle cx="400" cy="100" r="1.5" opacity=".7"/>
+        <circle cx="600" cy="60" r="1" opacity=".9"/>
+        <circle cx="800" cy="90" r="1.5" opacity=".5"/>
+        <circle cx="950" cy="40" r="1" opacity=".8"/>
+        <circle cx="1100" cy="70" r="1.5" opacity=".6"/>
+        <circle cx="150" cy="200" r="1" opacity=".4"/>
+        <circle cx="500" cy="150" r="1.5" opacity=".7"/>
+        <circle cx="900" cy="130" r="1" opacity=".5"/>
+      </g>
+      <!-- main figure silhouette -->
+      <g fill="#1a0000" opacity=".7">
+        <ellipse cx="850" cy="400" rx="180" ry="220"/>
+        <rect x="730" y="380" width="240" height="320"/>
+      </g>
+    </svg>
+  </div>
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      #1 em Alta Hoje
+    </div>
+    <h1 class="hero-title">SOMBRAS<br>DO ABISMO</h1>
+    <div class="hero-meta">
+      <span class="score">98% Match</span>
+      <span class="dot"></span>
+      <span>2024</span>
+      <span class="dot"></span>
+      <span class="tag">16+</span>
+      <span class="dot"></span>
+      <span>2 Temporadas</span>
+    </div>
+    <p class="hero-desc">
+      Em um futuro distópico onde a memória pode ser vendida e comprada, uma detetive renegada descobre uma conspiração que ameaça apagar a identidade de toda uma nação. Uma jornada brutal entre o que somos e o que fomos.
+    </p>
+    <div class="hero-btns">
+      <button class="btn btn-play" onclick="openModal(featuredShow)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Assistir
+      </button>
+      <button class="btn btn-info" onclick="openModal(featuredShow)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Mais Informações
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- SECTIONS -->
+<div class="sections" id="mainSections"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modalBox">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-hero">
+      <canvas id="modalCanvas"></canvas>
+      <div class="modal-hero-grad"></div>
+      <div class="modal-hero-content">
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <div class="modal-btns">
+          <button class="btn btn-play" style="font-size:.9rem;padding:.6rem 1.4rem">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Assistir
+          </button>
+          <button class="btn btn-info" id="myListBtn" style="font-size:.9rem;padding:.6rem 1.4rem" onclick="toggleMyList()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Minha Lista
+          </button>
+          <button class="btn btn-info" onclick="showToast('👍 Curtido!')" style="font-size:.9rem;padding:.6rem 1rem">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-info">
+        <p class="modal-desc" id="modalDesc"></p>
+        <div class="modal-meta" id="modalMeta"></div>
+      </div>
+    </div>
+    <div class="modal-more-title">Mais Títulos Similares</div>
+    <div class="modal-grid" id="modalGrid"></div>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-input-wrap">
+    <input class="search-input" id="searchInput" placeholder="Pesquisar títulos, gêneros…" oninput="doSearch(this.value)">
+    <button class="search-close" onclick="closeSearch()">✕</button>
+  </div>
+  <div class="search-results-title" id="searchResultsTitle">Títulos em Alta</div>
+  <div class="search-grid" id="searchGrid"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- FOOTER -->
+<footer>
+  <ul class="footer-links">
+    <li><a href="#">Perguntas frequentes</a></li>
+    <li><a href="#">Central de Ajuda</a></li>
+    <li><a href="#">Conta</a></li>
+    <li><a href="#">Media Center</a></li>
+    <li><a href="#">Relacionamento com Investidores</a></li>
+    <li><a href="#">Empregos</a></li>
+    <li><a href="#">Formas de Assistir</a></li>
+    <li><a href="#">Termos de Uso</a></li>
+    <li><a href="#">Privacidade</a></li>
+    <li><a href="#">Preferências de Cookies</a></li>
+    <li><a href="#">Informações Corporativas</a></li>
+    <li><a href="#">Contato</a></li>
+  </ul>
+  <div class="footer-bottom">
+    <div class="footer-logo">HENFLIX</div>
+    <div style="color:#555">© 2024 HenFlix. Todos os direitos reservados.</div>
+  </div>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>
